@@ -1,0 +1,56 @@
+RESEARCH PAPER GRAPH DATA & METHODOLOGY SUMMARY
+=================================================
+Project: Inventory Demand Forecasting using Machine Learning
+Date: October 2026
+Output Directory: outputs/research_paper_graphs/
+
+1. Graph 01: Model Comparison by RMSE (01_model_comparison_rmse.png)
+   - Data Source: outputs/model_comparison.csv (Reported Metrics)
+   - Method: Sorted horizontal bar chart comparing Root Mean Squared Error (RMSE) across all 8 evaluated models.
+   - Highlights: The Hybrid (Ridge+XGB) model achieved the lowest RMSE of 28.84, followed by Stacking (30.36) and ExtraTrees (31.32).
+
+2. Graph 02: Model Comparison by MAE (02_model_comparison_mae.png)
+   - Data Source: outputs/model_comparison.csv (Reported Metrics)
+   - Method: Sorted horizontal bar chart comparing Mean Absolute Error (MAE).
+   - Highlights: The Stacking (Ensemble) model achieved the lowest MAE of 13.50, closely followed by Hybrid (13.59) and ExtraTrees (13.76).
+
+3. Graph 03: Model Comparison by R² Score (03_model_comparison_r2.png)
+   - Data Source: outputs/model_comparison.csv (Reported Metrics)
+   - Method: Sorted horizontal bar chart comparing Coefficient of Determination (R² Score).
+   - Highlights: The Hybrid (Ridge+XGB) model achieved the highest R² score of 0.7571 (explaining ~75.7% of demand variance), outperforming Stacking (0.7308) and ExtraTrees (0.7135).
+
+4. Graph 04: Model Comparison by MAPE (04_model_comparison_mape.png)
+   - Data Source: outputs/model_comparison.csv (Reported Metrics)
+   - Method: Sorted horizontal bar chart comparing Mean Absolute Percentage Error (MAPE %).
+   - Highlights: The Stacking (Ensemble) model achieved the lowest MAPE of 34.11%, followed by Hybrid (35.33%) and ExtraTrees (35.84%).
+
+5. Graph 05: Actual vs. Predicted Demand (05_actual_vs_predicted.png)
+   - Data Source: outputs/predictions.csv (Actual Test Observations, N=11,550)
+   - Method: Hexbin scatter density plot of actual demand vs predicted demand for the top-performing model (Hybrid Ridge+XGB). Includes a red 1:1 reference line (y=x).
+   - Findings: Predictions cluster tightly along the diagonal line, confirming high fit accuracy across low and medium demand ranges.
+
+6. Graph 06: Actual and Predicted Demand Over Time (06_actual_vs_predicted_over_time.png)
+   - Data Source: outputs/predictions.csv (Actual Test Observations)
+   - Method: Two-panel time-series line chart. Panel (a) shows macro average weekly demand across all 76 stores & 28 SKUs during the test window (May 07, 2013 - July 09, 2013). Panel (b) shows micro trajectory tracking for a representative high-volume SKU.
+   - Findings: Hybrid model predictions closely track both macro trend shifts and micro SKU demand spikes.
+
+7. Graph 07: Demand Distribution (07_demand_distribution.png)
+   - Data Source: data/train.csv (Actual Dataset, N=150,150)
+   - Method: Two-panel distribution analysis. Panel (a) shows raw target units_sold distribution (highly right-skewed, mean=51.67, median=35.0). Panel (b) shows log-transformed target log1p(units_sold) resulting in a near-normal distribution suitable for ML training.
+
+8. Graph 08: Average Demand Over Time (08_average_weekly_demand.png)
+   - Data Source: data/train.csv (Actual Dataset)
+   - Method: Line chart showing 130 weeks of historical mean weekly demand (Jan 2011 to Jul 2013) with 4-week moving average and shaded regions marking the chronological Train (104 wks), Validation (8 wks), and Test (10 wks) splits.
+
+9. Graph 09: Feature Importance (09_feature_importance.png)
+   - Data Source: Fitted XGBoost Regressor model on engineered features
+   - Method: Horizontal bar chart showing relative feature importances (Gini/Gain scores) for the top 20 features.
+   - Key Features: Demand lag features (lag_1, lag_2), rolling statistics (rolling_mean_4, rolling_mean_8), and price metrics (discount_pct, total_price) dominate model predictions.
+
+10. Graph 10: SHAP Summary Plot (10_shap_summary.png)
+    - Data Source: SHAP TreeExplainer evaluated on test set feature matrix sample (N=1,000) using XGBoost.
+    - Method: SHAP beeswarm summary plot illustrating how high/low feature values push predictions higher or lower.
+
+11. Graph 11: SHAP Feature Importance Plot (11_shap_feature_importance.png)
+    - Data Source: SHAP TreeExplainer evaluated on test set feature matrix sample using XGBoost.
+    - Method: SHAP bar plot ranking global feature influence by mean absolute SHAP value (|SHAP value|).

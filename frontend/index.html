@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Nexus Inventory AI — AI-powered demand forecasting & inventory optimization" />
+  <title>Nexus Inventory AI — Demand Intelligence Dashboard</title>
+
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <!-- Ambient light gradients matching reference image -->
+  <div class="ambient-glow glow-tr" aria-hidden="true"></div>
+  <div class="ambient-glow glow-bl" aria-hidden="true"></div>
+
+  <div class="shell">
+
+    <!-- ════════════ SIDEBAR ════════════ -->
+    <aside class="sidebar" id="sidebar">
+      
+      <!-- Logo -->
+      <div class="sidebar-logo">
+        <div class="logo-box">
+          <svg viewBox="0 0 32 32" fill="none" class="cube-icon">
+            <path d="M16 2L29 9.5V22.5L16 30L3 22.5V9.5L16 2Z" stroke="#007bff" stroke-width="2.2" stroke-linejoin="round"/>
+            <path d="M16 2V16.5M16 16.5L29 9.5M16 16.5L3 9.5" stroke="#007bff" stroke-width="2.2" stroke-linejoin="round"/>
+            <path d="M16 16.5L16 30" stroke="#007bff" stroke-width="2.2"/>
+            <path d="M9.5 6L22.5 13.5M3 16L16 23.5L29 16" stroke="#00d4ff" stroke-width="1.2" opacity="0.6"/>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <span class="logo-name">NEXUS</span>
+          <span class="logo-sub">Inventory AI</span>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="sidebar-nav" aria-label="Main Navigation">
+        <ul id="navList">
+          <li class="nav-item active" data-page="dashboard">
+            <a href="#" class="nav-link" aria-current="page">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                <polyline points="9 22 9 12 15 12 15 22"/>
+              </svg>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li class="nav-item" data-page="forecast">
+            <a href="#" class="nav-link">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+                <polyline points="17 6 23 6 23 12"/>
+              </svg>
+              <span>Demand Forecast</span>
+            </a>
+          </li>
+          <li class="nav-item" data-page="models">
+            <a href="#" class="nav-link">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+                <polyline points="2 17 12 22 22 17"/>
+                <polyline points="2 12 12 17 22 12"/>
+              </svg>
+              <span>Model Intel</span>
+            </a>
+          </li>
+          <li class="nav-item" data-page="inventory">
+            <a href="#" class="nav-link">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+                <line x1="12" y1="22.08" x2="12" y2="12"/>
+              </svg>
+              <span>Inventory</span>
+            </a>
+          </li>
+          <li class="nav-item" data-page="predict">
+            <a href="#" class="nav-link">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="20" x2="18" y2="10"/>
+                <line x1="12" y1="20" x2="12" y2="4"/>
+                <line x1="6" y1="20" x2="6" y2="14"/>
+              </svg>
+              <span>Reports</span>
+            </a>
+          </li>
+          <li class="nav-item" data-page="settings">
+            <a href="#" class="nav-link">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+              </svg>
+              <span>Settings</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Sidebar Bottom Card / 3D Warehouse Boxes Illustration -->
+      <div class="sidebar-boxes-graphic">
+        <svg viewBox="0 0 160 110" fill="none" class="boxes-svg">
+          <defs>
+            <linearGradient id="boxGrad1" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#f59e0b"/>
+              <stop offset="100%" stop-color="#d97706"/>
+            </linearGradient>
+            <linearGradient id="boxGrad2" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#fbbf24"/>
+              <stop offset="100%" stop-color="#f59e0b"/>
+            </linearGradient>
+            <linearGradient id="waveGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="rgba(168,85,247,0.2)"/>
+              <stop offset="100%" stop-color="rgba(99,102,241,0.05)"/>
+            </linearGradient>
+          </defs>
+          <!-- Soft Wave Background -->
+          <path d="M-10 70 Q40 40 80 75 T170 60 L170 120 L-10 120 Z" fill="url(#waveGrad)"/>
+          
+          <!-- Box Left -->
+          <g transform="translate(10, 35)">
+            <polygon points="25,0 50,12 25,24 0,12" fill="#fbbf24"/>
+            <polygon points="0,12 25,24 25,55 0,43" fill="#d97706"/>
+            <polygon points="25,24 50,12 50,43 25,55" fill="#f59e0b"/>
+            <line x1="25" y1="2" x2="25" y2="22" stroke="#b45309" stroke-width="2" opacity="0.4"/>
+          </g>
+
+          <!-- Box Middle Back -->
+          <g transform="translate(42, 20)">
+            <polygon points="28,0 56,13 28,26 0,13" fill="#fbbf24"/>
+            <polygon points="0,13 28,26 28,62 0,49" fill="#d97706"/>
+            <polygon points="28,26 56,13 56,49 28,62" fill="#f59e0b"/>
+            <line x1="28" y1="3" x2="28" y2="24" stroke="#b45309" stroke-width="2.2" opacity="0.4"/>
+          </g>
+
+          <!-- Box Right -->
+          <g transform="translate(85, 38)">
+            <polygon points="24,0 48,11 24,22 0,11" fill="#fbbf24"/>
+            <polygon points="0,11 24,22 24,50 0,39" fill="#d97706"/>
+            <polygon points="24,22 48,11 48,39 24,50" fill="#f59e0b"/>
+            <line x1="24" y1="2" x2="24" y2="20" stroke="#b45309" stroke-width="1.8" opacity="0.4"/>
+          </g>
+        </svg>
+      </div>
+
+    </aside>
+
+    <!-- ════════════ MAIN CONTENT ════════════ -->
+    <div class="main-wrap">
+
+      <!-- TOP HEADER BAR -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="hamburger" id="hamburgerBtn" aria-label="Toggle sidebar">
+            <span></span><span></span><span></span>
+          </button>
+          <div class="header-titles">
+            <h1 class="main-title">
+              Demand Intelligence <span class="gradient-word">Dashboard</span>
+            </h1>
+            <p class="main-subtitle">AI-powered demand forecasting &amp; inventory optimization</p>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <!-- Model Live Status Pill -->
+          <div class="model-live-pill">
+            <span class="live-dot"></span>
+            <span>Model Live</span>
+          </div>
+
+          <!-- Notification Bell -->
+          <button class="icon-circle-btn" id="notifBtn" title="Notifications" aria-label="Notifications">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="bell-icon">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+            </svg>
+            <span class="badge-count">1</span>
+          </button>
+
+          <!-- User Avatar -->
+          <div class="avatar-circle" title="Hansika">
+            <span>HA</span>
+          </div>
+
+          <!-- Sign Out Button -->
+          <button class="icon-circle-btn" id="signOutBtn" title="Sign Out" aria-label="Sign Out">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:17px;height:17px;color:#ef4444;">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+              <polyline points="16 17 21 12 16 7"/>
+              <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+          </button>
+
+          <!-- Date Badge -->
+          <div class="date-display">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="cal-icon">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+            <span id="heroDate">Sunday, 1 November 2026</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- SCROLLABLE PAGES CONTAINER -->
+      <main class="pages-wrap">
+
+        <!-- ─────────── PAGE: DASHBOARD (EXACT REPLICA) ─────────── -->
+        <section class="page active" id="page-dashboard">
+
+          <!-- 4 KPI CARDS ROW -->
+          <div class="kpi-grid" id="kpiGrid">
+
+            <!-- Card 1: Total Demand -->
+            <div class="kpi-card card-blue clickable" data-kpi-idx="0">
+              <div class="kpi-top">
+                <div class="kpi-icon-wrap icon-blue">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                    <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+                    <line x1="12" y1="22.08" x2="12" y2="12"/>
+                  </svg>
+                </div>
+              </div>
+              <div class="kpi-label">Total Demand (Forecast)</div>
+              <div class="kpi-value" data-final-val="142,830">142,830</div>
+              <div class="kpi-trend-row">
+                <span class="trend-pill trend-up">▲ +4.2%</span>
+                <span class="trend-sub">vs last week</span>
+              </div>
+              <!-- Wave graphic -->
+              <svg class="kpi-wave wave-blue" viewBox="0 0 120 40" fill="none">
+                <path d="M0 35 C30 30, 45 15, 75 22 C95 28, 105 10, 120 5 L120 40 L0 40 Z" fill="url(#blueWaveGrad)"/>
+                <path d="M0 35 C30 30, 45 15, 75 22 C95 28, 105 10, 120 5" stroke="#007bff" stroke-width="2"/>
+                <defs>
+                  <linearGradient id="blueWaveGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="rgba(0,123,255,0.25)"/>
+                    <stop offset="100%" stop-color="rgba(0,123,255,0.02)"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+
+            <!-- Card 2: Forecast Accuracy -->
+            <div class="kpi-card card-purple clickable" data-kpi-idx="1">
+              <div class="kpi-top">
+                <div class="kpi-icon-wrap icon-purple">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <circle cx="12" cy="12" r="6"/>
+                    <circle cx="12" cy="12" r="2"/>
+                  </svg>
+                </div>
+              </div>
+              <div class="kpi-label">Forecast Accuracy</div>
+              <div class="kpi-value" data-final-val="75.7%">75.7%</div>
+              <div class="kpi-trend-row">
+                <span class="trend-pill trend-up">▲ +2.1%</span>
+                <span class="trend-sub">vs last week</span>
+              </div>
+              <!-- Wave graphic -->
+              <svg class="kpi-wave wave-purple" viewBox="0 0 120 40" fill="none">
+                <path d="M0 35 C25 32, 50 20, 75 25 C95 30, 105 12, 120 8 L120 40 L0 40 Z" fill="url(#purpleWaveGrad)"/>
+                <path d="M0 35 C25 32, 50 20, 75 25 C95 30, 105 12, 120 8" stroke="#8b5cf6" stroke-width="2"/>
+                <defs>
+                  <linearGradient id="purpleWaveGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="rgba(139,92,246,0.25)"/>
+                    <stop offset="100%" stop-color="rgba(139,92,246,0.02)"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+
+            <!-- Card 3: Stockout Risk Items -->
+            <div class="kpi-card card-pink clickable" data-kpi-idx="2">
+              <div class="kpi-top">
+                <div class="kpi-icon-wrap icon-pink">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                    <line x1="12" y1="9" x2="12" y2="13"/>
+                    <line x1="12" y1="17" x2="12.01" y2="17"/>
+                  </svg>
+                </div>
+              </div>
+              <div class="kpi-label">Stockout Risk Items</div>
+              <div class="kpi-value" data-final-val="12">12</div>
+              <div class="kpi-trend-row">
+                <span class="trend-pill trend-down">▼ +3</span>
+                <span class="trend-sub">vs last week</span>
+              </div>
+              <!-- Wave graphic -->
+              <svg class="kpi-wave wave-pink" viewBox="0 0 120 40" fill="none">
+                <path d="M0 35 C35 30, 60 32, 85 24 C100 20, 110 12, 120 16 L120 40 L0 40 Z" fill="url(#pinkWaveGrad)"/>
+                <path d="M0 35 C35 30, 60 32, 85 24 C100 20, 110 12, 120 16" stroke="#f43f5e" stroke-width="2"/>
+                <defs>
+                  <linearGradient id="pinkWaveGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="rgba(244,63,94,0.22)"/>
+                    <stop offset="100%" stop-color="rgba(244,63,94,0.02)"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+
+            <!-- Card 4: Active Stores -->
+            <div class="kpi-card card-green clickable" data-kpi-idx="3">
+              <div class="kpi-top">
+                <div class="kpi-icon-wrap icon-green">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                    <polyline points="9 22 9 12 15 12 15 22"/>
+                  </svg>
+                </div>
+              </div>
+              <div class="kpi-label">Active Stores</div>
+              <div class="kpi-value" data-final-val="76">76</div>
+              <div class="kpi-trend-row">
+                <span class="trend-pill trend-neutral">0%</span>
+                <span class="trend-sub">no change</span>
+              </div>
+              <!-- Wave graphic -->
+              <svg class="kpi-wave wave-green" viewBox="0 0 120 40" fill="none">
+                <path d="M0 35 C30 32, 50 28, 75 22 C95 18, 105 8, 120 5 L120 40 L0 40 Z" fill="url(#greenWaveGrad)"/>
+                <path d="M0 35 C30 32, 50 28, 75 22 C95 18, 105 8, 120 5" stroke="#10b981" stroke-width="2"/>
+                <defs>
+                  <linearGradient id="greenWaveGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="rgba(16,185,129,0.22)"/>
+                    <stop offset="100%" stop-color="rgba(16,185,129,0.02)"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+
+          </div>
+
+          <!-- MIDDLE CHARTS ROW -->
+          <div class="dashboard-charts-row">
+            
+            <!-- Left Chart: Demand Trend -->
+            <div class="panel-card chart-trend-card">
+              <div class="panel-header">
+                <div class="panel-title-group">
+                  <div class="panel-icon-wrap blue-soft">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#007bff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="2" y="12" width="4" height="9" rx="1"/>
+                      <rect x="10" y="6" width="4" height="15" rx="1"/>
+                      <rect x="18" y="2" width="4" height="19" rx="1"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <h2 class="panel-title">Demand Trend</h2>
+                    <p class="panel-sub">Actual vs Forecasted Demand</p>
+                  </div>
+                </div>
+
+                <div class="panel-controls">
+                  <!-- Legend -->
+                  <div class="chart-legend-row">
+                    <span class="legend-item"><span class="legend-dot dot-actual"></span>Actual</span>
+                    <span class="legend-item"><span class="legend-dot dot-forecast"></span>Forecast</span>
+                  </div>
+                  <!-- Time range toggle -->
+                  <div class="pill-group" id="trendFilter">
+                    <button class="pill-btn active" data-range="4w">4W</button>
+                    <button class="pill-btn" data-range="8w">8W</button>
+                    <button class="pill-btn" data-range="12w">12W</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Main Trend Chart Canvas -->
+              <div class="chart-canvas-wrap trend-canvas-wrap">
+                <canvas id="trendChart"></canvas>
+              </div>
+            </div>
+
+            <!-- Right Chart: Demand by Category -->
+            <div class="panel-card chart-category-card">
+              <div class="panel-header">
+                <div class="panel-title-group">
+                  <div class="panel-icon-wrap purple-soft">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="10"/>
+                      <polyline points="12 6 12 12 16 14"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <h2 class="panel-title">Demand by Category</h2>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Category Donut + Center Content + Side Legend -->
+              <div class="category-body">
+                <div class="donut-container">
+                  <div class="donut-canvas-wrap">
+                    <canvas id="categoryChart"></canvas>
+                  </div>
+                  <!-- Donut Center Label -->
+                  <div class="donut-center-info">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#0f172a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="donut-center-box">
+                      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                      <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+                      <line x1="12" y1="22.08" x2="12" y2="12"/>
+                    </svg>
+                    <span class="donut-center-val">142,830</span>
+                    <span class="donut-center-sub">Total Units</span>
+                  </div>
+                </div>
+
+                <!-- Custom Right Legend with percentages -->
+                <div class="category-legend" id="donutLegend">
+                  <div class="cat-legend-row">
+                    <span class="cat-dot" style="background:#0084ff;"></span>
+                    <span class="cat-name">Electronics</span>
+                    <span class="cat-pct">34.8%</span>
+                  </div>
+                  <div class="cat-legend-row">
+                    <span class="cat-dot" style="background:#9333ea;"></span>
+                    <span class="cat-name">Apparel</span>
+                    <span class="cat-pct">18.9%</span>
+                  </div>
+                  <div class="cat-legend-row">
+                    <span class="cat-dot" style="background:#10b981;"></span>
+                    <span class="cat-name">Home &amp; Garden</span>
+                    <span class="cat-pct">16.5%</span>
+                  </div>
+                  <div class="cat-legend-row">
+                    <span class="cat-dot" style="background:#f59e0b;"></span>
+                    <span class="cat-name">Others</span>
+                    <span class="cat-pct">29.8%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- BOTTOM SECTION: AI INSIGHT BANNER -->
+          <div class="ai-insight-banner">
+            
+            <!-- Left AI Badge -->
+            <div class="ai-badge-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ai-chip-icon">
+                <rect x="4" y="4" width="16" height="16" rx="2"/>
+                <rect x="9" y="9" width="6" height="6"/>
+                <line x1="9" y1="1" x2="9" y2="4"/>
+                <line x1="15" y1="1" x2="15" y2="4"/>
+                <line x1="9" y1="20" x2="9" y2="23"/>
+                <line x1="15" y1="20" x2="15" y2="23"/>
+                <line x1="20" y1="9" x2="23" y2="9"/>
+                <line x1="20" y1="14" x2="23" y2="14"/>
+                <line x1="1" y1="9" x2="4" y2="9"/>
+                <line x1="1" y1="14" x2="4" y2="14"/>
+              </svg>
+              <span>AI Insight</span>
+            </div>
+
+            <!-- Item 1: Demand Up -->
+            <div class="ai-insight-item">
+              <div class="insight-icon-wrap circle-green">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="7" y1="17" x2="17" y2="7"/>
+                  <polyline points="7 7 17 7 17 17"/>
+                </svg>
+              </div>
+              <div class="insight-text-wrap">
+                <h4 class="insight-title text-green">Demand Up 4.2%</h4>
+                <p class="insight-desc">Overall demand is higher than last week.</p>
+              </div>
+            </div>
+
+            <div class="insight-divider"></div>
+
+            <!-- Item 2: Items at Risk -->
+            <div class="ai-insight-item">
+              <div class="insight-icon-wrap circle-orange">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                  <line x1="12" y1="9" x2="12" y2="13"/>
+                  <line x1="12" y1="17" x2="12.01" y2="17"/>
+                </svg>
+              </div>
+              <div class="insight-text-wrap">
+                <h4 class="insight-title">12 Items at Risk</h4>
+                <p class="insight-desc">Potential stockout in next 2 weeks.</p>
+              </div>
+            </div>
+
+            <div class="insight-divider"></div>
+
+            <!-- Item 3: Action -->
+            <div class="ai-insight-item action-item">
+              <div class="insight-icon-wrap circle-yellow">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#ea580c" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                  <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+                  <line x1="12" y1="22.08" x2="12" y2="12"/>
+                </svg>
+              </div>
+              <div class="insight-text-wrap">
+                <h4 class="insight-title">Action</h4>
+                <p class="insight-desc">Replenish 7 high-demand SKUs.</p>
+              </div>
+              <button class="action-arrow-btn" id="aiActionBtn" title="View Replenishment Plan">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"/>
+                  <polyline points="12 5 19 12 12 19"/>
+                </svg>
+              </button>
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- ─────────── PAGE: DEMAND FORECAST ─────────── -->
+        <section class="page" id="page-forecast">
+          <div class="page-hero">
+            <h2 class="subpage-title">Demand <span class="gradient-word">Forecast</span></h2>
+            <p class="subpage-desc">AI-powered weekly demand projections with confidence intervals</p>
+          </div>
+          <div class="panel-card" style="margin-bottom:20px;">
+            <div class="panel-header">
+              <div>
+                <h3 class="panel-title">10-Week Demand Forecast</h3>
+                <p class="panel-sub">Hybrid Ridge+XGBoost Model · Confidence Band ±1σ</p>
+              </div>
+            </div>
+            <div class="chart-canvas-wrap" style="height:320px;">
+              <canvas id="forecastChart"></canvas>
+            </div>
+          </div>
+          <div class="forecast-stats-grid" id="forecastStats"></div>
+        </section>
+
+        <!-- ─────────── PAGE: MODEL INTEL ─────────── -->
+        <section class="page" id="page-models">
+          <div class="page-hero">
+            <h2 class="subpage-title">Model <span class="gradient-word">Intelligence</span></h2>
+            <p class="subpage-desc">Trained algorithms benchmark and explainability metrics</p>
+          </div>
+          <div class="dashboard-charts-row">
+            <div class="panel-card">
+              <h3 class="panel-title" style="margin-bottom:14px;">Model Leaderboard</h3>
+              <div id="leaderboard"></div>
+            </div>
+            <div class="panel-card">
+              <h3 class="panel-title" style="margin-bottom:14px;">RMSE vs MAE Comparison</h3>
+              <div class="chart-canvas-wrap" style="height:260px;">
+                <canvas id="modelRmseChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ─────────── PAGE: INVENTORY ─────────── -->
+        <section class="page" id="page-inventory">
+          <div class="page-hero">
+            <h2 class="subpage-title">Inventory <span class="gradient-word">Health</span></h2>
+            <p class="subpage-desc">SKU-level stock tracking, days-of-supply, and replenishment risks</p>
+          </div>
+          <div class="panel-card">
+            <div class="inv-table-wrap">
+              <table class="inv-table" id="invTable">
+                <thead>
+                  <tr>
+                    <th>SKU ID</th>
+                    <th>Product Name</th>
+                    <th>Category</th>
+                    <th>Warehouse</th>
+                    <th>Stock</th>
+                    <th>Weekly Forecast</th>
+                    <th>Days Left</th>
+                    <th>Risk Status</th>
+                  </tr>
+                </thead>
+                <tbody id="invTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ─────────── PAGE: LIVE PREDICT / REPORTS ─────────── -->
+        <section class="page" id="page-predict">
+          <div class="page-hero">
+            <h2 class="subpage-title">Demand <span class="gradient-word">Prediction API</span></h2>
+            <p class="subpage-desc">Send records to the Hybrid ML model running on <code>localhost:5005</code></p>
+          </div>
+          <div class="dashboard-charts-row">
+            <div class="panel-card">
+              <h3 class="panel-title" style="margin-bottom:12px;">Input Records</h3>
+              <div class="pf-mode-tabs" style="display:flex;gap:8px;margin-bottom:14px;">
+                <button class="pill-btn active mode-tab" data-mode="form">Form</button>
+                <button class="pill-btn mode-tab" data-mode="json">JSON</button>
+              </div>
+              <div id="formMode" class="input-mode active">
+                <div class="form-grid">
+                  <div class="form-field"><label>Store ID</label><input type="text" id="fStore" value="S001"/></div>
+                  <div class="form-field"><label>SKU ID</label><input type="text" id="fSku" value="SKU-001"/></div>
+                  <div class="form-field"><label>Base Price ($)</label><input type="number" id="fBasePrice" value="120"/></div>
+                  <div class="form-field"><label>Total Price ($)</label><input type="number" id="fTotalPrice" value="98"/></div>
+                </div>
+              </div>
+              <div id="jsonMode" class="input-mode" style="display:none;">
+                <textarea id="jsonInput" class="code-area" rows="6">[{"store_id":"S001","sku_id":"SKU-001","base_price":120,"total_price":98}]</textarea>
+              </div>
+              <button class="btn-primary" id="predictBtn" style="margin-top:14px;">Run Prediction</button>
+            </div>
+            <div class="panel-card">
+              <h3 class="panel-title" style="margin-bottom:12px;">Prediction Output</h3>
+              <div id="prStatus" class="pr-status">Ready</div>
+              <div id="prSummary" class="pr-summary" style="margin-top:10px;"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ─────────── PAGE: SETTINGS ─────────── -->
+        <section class="page" id="page-settings">
+          <div class="page-hero">
+            <h2 class="subpage-title">Dashboard <span class="gradient-word">Settings</span></h2>
+            <p class="subpage-desc">Configure forecast horizons, store alerts, and model parameters</p>
+          </div>
+          <div class="panel-card" style="max-width:600px;">
+            <p style="color:#64748b;margin-bottom:16px;">Environment: <strong>Localhost Port 5005</strong> · Algorithm: <strong>Hybrid Ridge+XGBoost</strong></p>
+            <button class="btn-primary" onclick="alert('Settings saved successfully!')">Save Preferences</button>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ░░░ KPI DETAIL MODAL (Preserved & Styled Light Glass) ░░░ -->
+  <div class="kpim-overlay" id="kpimOverlay" role="dialog" aria-modal="true" aria-label="KPI Detail">
+    <div class="kpim-panel" id="kpimPanel">
+      <div class="kpim-header">
+        <div class="kpim-title-group">
+          <div class="kpim-icon-wrap" id="kpimIconWrap"></div>
+          <div>
+            <div class="kpim-label" id="kpimLabel"></div>
+            <div class="kpim-big-val" id="kpimBigVal"></div>
+            <div class="kpim-sub" id="kpimSub"></div>
+          </div>
+        </div>
+        <button class="kpim-close" id="kpimClose" aria-label="Close modal">✕</button>
+      </div>
+      <div class="kpim-stats-strip" id="kpimStatsStrip"></div>
+      <div class="kpim-body" id="kpimBody"></div>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>
